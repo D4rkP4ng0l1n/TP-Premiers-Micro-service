@@ -263,10 +263,21 @@ Votre mission, si vous l'acceptez :
 # Questions de réflexion
 
 1. Pourquoi voudrait-on éviter d'écrire directement des requêtes SQL à la main ?
-2. Que gagne-t-on en utilisant un ORM comme SQLAlchemy ?
-3. Est-ce que l’ORM vous empêche complètement d’accéder au SQL si besoin ?
-4. Est-ce que le code Python devient plus clair ou plus opaque avec un ORM ?
-5. À quel moment l’ORM peut devenir un inconvénient ? (performances, complexité, etc.)
+Pour des questions de sécurité ( Injection de code )
+Pour gagner en lisibilité
+
+3. Que gagne-t-on en utilisant un ORM comme SQLAlchemy ?
+On utilise des classes Python qui représente les tables ( donc on a "accès" à un visuel de toutes les tables )
+Une gestion automatique des transactions
+
+5. Est-ce que l’ORM vous empêche complètement d’accéder au SQL si besoin ?
+Non, on peut toujours écrire des requêtes SQL si besoin.
+
+6. Est-ce que le code Python devient plus clair ou plus opaque avec un ORM ?
+Il peut devenir plus opaque si on ne connait rien à l'ORM mais sinon il devient plus clair.
+
+7. À quel moment l’ORM peut devenir un inconvénient ? (performances, complexité, etc.)
+Quand il y a beaucoup de requêtes complexes.
 
 ## Quelques pistes pour vous aider...
 
