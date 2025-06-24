@@ -86,9 +86,19 @@ Héhé, vous avez déjà vu tout le code utile à cette partie... regardez donc 
 # Quelques questions de fond
 
 1. Pourquoi ne pas appeler directement open-meteo depuis le navigateur ?
-2. Quel est l'avantage de passer par un microservice intermédiaire ?
-3. Si le format de réponse de `open-meteo` change, que se passe-t-il ?
-4. Que pourrait-on ajouter pour rendre ce service plus complet ou plus robuste ?
+- Pour des questions de sécurité. La clef API ou le domaine de l'API pourrait être exposé
+- Pour des questions de format. Nous n'avons pas besoin de toutes les informations concernant open-meteo.
+  
+3. Quel est l'avantage de passer par un microservice intermédiaire ?
+- Pour des questions d'évolution. Si l'API open-meteo change, il faudra adapter le module qui se charge des appels.
+- Pour des questions de sécurité. L'API open-meteo n'est pas directement exposé aux clients.
+- Pour des questions de format. Nous pouvons faire un tri sur les informations obtenus via open-meteo.
+
+4. Si le format de réponse de `open-meteo` change, que se passe-t-il ?
+Le microservice plantera mais les clients non car ils ne dépendent pas l'un de l'autre.
+
+5. Que pourrait-on ajouter pour rendre ce service plus complet ou plus robuste ?
+- Une gestion des erreurs dans le cas où open-meteo pourrait changer
 
 # Dockerisation obligatoire
 
