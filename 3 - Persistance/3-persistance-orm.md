@@ -100,18 +100,39 @@ Avant de coder, prenez le temps de réfléchir à ces questions. Elles vous aide
 ## Sur la base de données
 
 1. Pourquoi ajouter une base de données à un service météo aussi simple ? Est-ce justifié ?
+Cela permet de stocker l'état d'une requête précédente afin d'éviter les appels répétés. 
+
 2. Est-ce que chaque microservice devrait avoir sa propre base, ou peut-on les partager ?
+Chaque microservice devrait avoir sa propore base car cela évite les dépendances.
+
 3. Que gagne-t-on (et que perd-on) en utilisant une base relationnelle plutôt qu'un fichier ou un dictionnaire Python ?
+Même si mettre en place une base relationnelle est un processus complexe qui nécessite un service, elle nous permet d'effectuer des requêtes avancées, d'avoir des transactions fiables et une performance durable.
+
 4. Que permet une base comme MySQL que ne permet pas un fichier JSON ?
-5. Si on voulait partager cette météo avec d'autres services, la base est-elle une bonne interface ?
-6. Peut-on facilement sauvegarder/exporter les données ? Et les restaurer ?
+MySQL permet plusieurs choses. On y trouve :
+- Le fait de pouvoir charger ( pour lire ou écrire ) partiellement des données
+- Pouvoir mettre en place des index afin d'accéder rapidement aux données
+- Sécuriser les accès
+
+6. Si on voulait partager cette météo avec d'autres services, la base est-elle une bonne interface ?
+Non car on ne partage pas une base de données entre les services. Pour ce faire on utilise unr API.
+
+7. Peut-on facilement sauvegarder/exporter les données ? Et les restaurer ?
+MySQL permet d'exporter les données via des fichiers .sql. C'est plus simple à manipuler qu'un ensemble de fichier JSON.
 
 ## Sur les performances et la scalabilité
 
-7. Est-ce que l'ajout d'une BDD rend le service plus rapide ? Plus lent ?
-8. Que se passe-t-il si plusieurs clients envoient des requêtes simultanément ?
-9. Peut-on mettre à jour une donnée météo sans recontacter l'API externe ?
+8. Est-ce que l'ajout d'une BDD rend le service plus rapide ? Plus lent ?
+Ca va dépendre de l'utilisation de la BDD. Si on fait des requêtes non optimisés alors ce sera plus long, par contre si les requêtes sont optimisés et exécutés dans la RAM alors ce sera plus rapide.
+
+9. Que se passe-t-il si plusieurs clients envoient des requêtes simultanément ?
+Il faut faire attention aux blocages, pour se faire il faut bien gérer les commits.
+
+10. Peut-on mettre à jour une donnée météo sans recontacter l'API externe ?
+Oui, à condition que l'on a accès à la base de données, on peut directement modifié la base de données.
+
 10. Est-ce qu'on peut interroger la météo d'hier ou de demain avec cette architecture ?
+En imaginant que l'on stocke la météo tous les jours, alors oui on pourra consulter celle d'hier par contre nous n'aurons pas accès à celle de demain ( à moins qu'il y ai une option disponible dans l'API externe )
 
 # Le vif du sujet : comprendre et utiliser SQLAlchemy (ORM)
 
