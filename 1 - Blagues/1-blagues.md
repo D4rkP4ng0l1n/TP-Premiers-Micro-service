@@ -28,17 +28,33 @@ Avant de parler microservices, posons-nous quelques questions simples :
 ## Pourquoi faire des petits services ?
 
 1. Pourquoi voudrait-on **diviser** un gros service web en plusieurs morceaux plus petits ?
+Pour rendre le système plus modulaire, souple et facile à maintenir. Chaque petit service a une seule responsabilité, ce qui réduit les dépendances et les effets de bord.
+  
 2. Imaginez que vous travaillez sur un gros projet. Que se passe-t-il si vous devez modifier une seule fonctionnalité ? Est-ce facile ? Risqué ?
+Dans un gros projet monolithique, modifier une seule fonctionnalité peut être complexe et risqué. Une modification peut avoir des impacts inattendus ailleurs dans le système.
+  
 3. Peut-on confier un petit service à une autre équipe ou un autre développeur sans qu'il ait besoin de connaître tout le reste ?
+Oui, un microservice bien conçu peut être géré indépendamment, sans avoir à connaître l’ensemble du système. Cela facilite le travail en équipe.
+  
 4. Que se passe-t-il si une partie tombe en panne ? Peut-on réparer sans tout redémarrer ?
+Oui, si un microservice tombe en panne, on peut le redémarrer ou le corriger indépendamment des autres. Cela améliore la résilience du système.
+  
 5. Avez-vous déjà vu ou utilisé un site ou une appli qui semblait "modulaire" ?
+Une application comme Amazon semble modulaire avec un module pour la boutique, le chat, le profil, etc...  
 
 ## Comment découper un service ?
 
 6. Sur quels critères peut-on séparer un gros service en plusieurs petits ?
+On peut séparer selon les fonctionnalités, les types de données manipulées, ou les besoins métier (ex : gestion des utilisateurs, envoi d’e-mails, statistiques…).
+
 7. Faut-il découper par fonctionnalité (ex : blague, météo, cantine...) ? Par type de donnée ? Par public cible ?
+Le découpage le plus classique est celui par fonctionnalité. Cependant, selon le contexte on pourrait être ammené à découper par type de donnée ou par public cible.
+
 8. À partir de combien de lignes de code ou de routes HTTP faut-il envisager un découpage ?
+Il n'y a pas de nombre précis. Normalement on commence à envisager un découpage lorsque le code va devenir trop complexe.
+
 9. Le découpage doit-il être figé ou peut-il évoluer ?
+Il peut et doit évoluer. Un bon système de microservices s’adapte aux changements des besoins métiers et à l’évolution du code.
 
 # Le premier micro-service
 
