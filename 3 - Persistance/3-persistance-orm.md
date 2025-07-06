@@ -99,40 +99,38 @@ Avant de coder, prenez le temps de réfléchir à ces questions. Elles vous aide
 
 ## Sur la base de données
 
-1. Pourquoi ajouter une base de données à un service météo aussi simple ? Est-ce justifié ?
-Cela permet de stocker l'état d'une requête précédente afin d'éviter les appels répétés. 
+1. Pourquoi ajouter une base de données à un service météo aussi simple ? Est-ce justifié ?  
 
-2. Est-ce que chaque microservice devrait avoir sa propre base, ou peut-on les partager ?
-Chaque microservice devrait avoir sa propore base car cela évite les dépendances.
+        Pour éviter de surcharger l'API externe et pour stocker les données de manière persistante.
+2. Est-ce que chaque microservice devrait avoir sa propre base, ou peut-on les partager ?  
 
-3. Que gagne-t-on (et que perd-on) en utilisant une base relationnelle plutôt qu'un fichier ou un dictionnaire Python ?
-Même si mettre en place une base relationnelle est un processus complexe qui nécessite un service, elle nous permet d'effectuer des requêtes avancées, d'avoir des transactions fiables et une performance durable.
+        Chaque microservice devrait idéalement avoir sa propre base pour éviter les dépendances et faciliter la scalabilité. Cependant, dans certains cas, il peut être judicieux de partager une base si les services sont étroitement liés.
+3. Que gagne-t-on (et que perd-on) en utilisant une base relationnelle plutôt qu'un fichier ou un dictionnaire Python ?  
 
+        On gagne en robustesse, en scalabilité et en capacité de requête. On perd en simplicité et en performance pour des opérations très simples.
 4. Que permet une base comme MySQL que ne permet pas un fichier JSON ?
-MySQL permet plusieurs choses. On y trouve :
-- Le fait de pouvoir charger ( pour lire ou écrire ) partiellement des données
-- Pouvoir mettre en place des index afin d'accéder rapidement aux données
-- Sécuriser les accès
 
-6. Si on voulait partager cette météo avec d'autres services, la base est-elle une bonne interface ?
-Non car on ne partage pas une base de données entre les services. Pour ce faire on utilise unr API.
+        MySQL permet des requêtes complexes, des transactions, une gestion des accès concurrents, et une intégrité des données. Un fichier JSON est limité à la sérialisation/désérialisation et ne gère pas les accès concurrents.
+5. Si on voulait partager cette météo avec d'autres services, la base est-elle une bonne interface ?  
+        Oui, une base de données permet de structurer les données de manière standardisée et d'offrir des interfaces de requête (SQL) qui peuvent être utilisées par d'autres services. Cela facilite l'intégration et la réutilisation des données.
+6. Peut-on facilement sauvegarder/exporter les données ? Et les restaurer ?  
 
-7. Peut-on facilement sauvegarder/exporter les données ? Et les restaurer ?
-MySQL permet d'exporter les données via des fichiers .sql. C'est plus simple à manipuler qu'un ensemble de fichier JSON.
+        Oui, MySQL permet de faire des sauvegardes via des outils comme `mysqldump` ou des commandes SQL pour exporter les données. La restauration est également simple avec les mêmes outils. De plus, Docker facilite la gestion des volumes pour conserver les données entre les redémarrages du conteneur.
 
 ## Sur les performances et la scalabilité
 
-8. Est-ce que l'ajout d'une BDD rend le service plus rapide ? Plus lent ?
-Ca va dépendre de l'utilisation de la BDD. Si on fait des requêtes non optimisés alors ce sera plus long, par contre si les requêtes sont optimisés et exécutés dans la RAM alors ce sera plus rapide.
+7. Est-ce que l'ajout d'une BDD rend le service plus rapide ? Plus lent ?  
 
-9. Que se passe-t-il si plusieurs clients envoient des requêtes simultanément ?
-Il faut faire attention aux blocages, pour se faire il faut bien gérer les commits.
+        L'ajout d'une base de données peut rendre le service plus lent pour les requêtes individuelles, car il y a une latence liée à la connexion et aux opérations de lecture/écriture. Cependant, cela permet de réduire la charge sur l'API externe en évitant les appels redondants, ce qui peut améliorer les performances globales du système.
+8. Que se passe-t-il si plusieurs clients envoient des requêtes simultanément ?  
 
-10. Peut-on mettre à jour une donnée météo sans recontacter l'API externe ?
-Oui, à condition que l'on a accès à la base de données, on peut directement modifié la base de données.
+        Si plusieurs clients envoient des requêtes simultanément, la base de données gère les accès concurrents. Cependant, il peut y avoir des problèmes de contention ou de verrouillage si les requêtes modifient les mêmes données. Il est important de gérer les transactions et les verrous pour éviter les conflits.
+9. Peut-on mettre à jour une donnée météo sans recontacter l'API externe ?  
 
+        Oui, on peut mettre à jour une donnée météo en modifiant l'enregistrement dans la base de données sans recontacter l'API externe. Cela permet de conserver les données locales et de réduire le nombre d'appels à l'API.
 10. Est-ce qu'on peut interroger la météo d'hier ou de demain avec cette architecture ?
-En imaginant que l'on stocke la météo tous les jours, alors oui on pourra consulter celle d'hier par contre nous n'aurons pas accès à celle de demain ( à moins qu'il y ai une option disponible dans l'API externe )
+
+        Oui, on peut interroger la météo d'hier ou de demain en stockant les données avec un timestamp. On peut ensuite utiliser des requêtes SQL pour filtrer les données en fonction de la date souhaitée.
 
 # Le vif du sujet : comprendre et utiliser SQLAlchemy (ORM)
 
@@ -263,21 +261,20 @@ Votre mission, si vous l'acceptez :
 # Questions de réflexion
 
 1. Pourquoi voudrait-on éviter d'écrire directement des requêtes SQL à la main ?
-Pour des questions de sécurité ( Injection de code )
-Pour gagner en lisibilité
 
-3. Que gagne-t-on en utilisant un ORM comme SQLAlchemy ?
-On utilise des classes Python qui représente les tables ( donc on a "accès" à un visuel de toutes les tables )
-Une gestion automatique des transactions
+        Pour éviter les erreurs de syntaxe, améliorer la lisibilité du code, faciliter la maintenance et permettre une abstraction des détails de la base de données.
+2. Que gagne-t-on en utilisant un ORM comme SQLAlchemy ?
 
-5. Est-ce que l’ORM vous empêche complètement d’accéder au SQL si besoin ?
-Non, on peut toujours écrire des requêtes SQL si besoin.
+        On gagne en lisibilité et en abstraction, on écrit du python au lieu de SQL, on peut facilement manipuler des objets et gérer les relations entre eux. Cela permet aussi de changer de base de données sans modifier le code applicatif.
+3. Est-ce que l’ORM vous empêche complètement d’accéder au SQL si besoin ?
 
-6. Est-ce que le code Python devient plus clair ou plus opaque avec un ORM ?
-Il peut devenir plus opaque si on ne connait rien à l'ORM mais sinon il devient plus clair.
+        Pas du tout, on peux toujours utiliser des requête SQL en dur 
+4. Est-ce que le code Python devient plus clair ou plus opaque avec un ORM ?
 
-7. À quel moment l’ORM peut devenir un inconvénient ? (performances, complexité, etc.)
-Quand il y a beaucoup de requêtes complexes.
+        Beaucoup p^lus clair, car on  a pas au milieu du code en python des requêtes SQL. Un ORM permet de manipuler les données de manière orientée objet beaucoup plus effucace et lisible.
+5. À quel moment l’ORM peut devenir un inconvénient ? (performances, complexité, etc.)
+
+        L'ORM peut devenir un inconvénient si les requêtes deviennent très complexes, car il peut générer du SQL inefficace. De plus, pour des opérations très simples ou des scripts légers, l'ORM peut ajouter une couche de complexité inutile.
 
 ## Quelques pistes pour vous aider...
 
